@@ -1,4 +1,4 @@
-var my_name = 'User';
+var myName = 'User';
 var PLANETS_MODEL = [
   "there is a rule named 'r1' that has 'if the planet C ~ orbits ~ the star D then the star D ~ is orbited by ~ the planet C' as instruction.",
   "there is a rule named 'r2' that has 'if the planet C ~ is orbited by ~ the moon D then the moon D ~ orbits ~ the planet C' as instruction.",
@@ -18,41 +18,42 @@ var PLANETS_MODEL = [
   "there is a planet named Neptune that orbits the star 'sun' and is orbited by the moon 'Triton' and is orbited by the moon 'Nereid' and is orbited by the moon 'Larissa' and has 'media/Neptune.jpg' as image.",
 ];
 
-var processed_cards = [];
+var processedCards = [];
 
-var node = new CENode(MODELS.CORE, PLANETS_MODEL);
-node.agent.set_name('agent1');
+var node = new CENode(CEModels.core, PLANETS_MODEL);
+node.attachAgent();
+node.agent.setName('agent1');
 
 var input = document.getElementById('input');
 var button = document.getElementById('send');
 var messages = document.getElementById('messages');
 
-button.onclick = send_message;
+button.onclick = sendMessage;
 input.onkeyup = function(e){
     if(e.keyCode == 13){
-        send_message();
+        sendMessage();
     }
 };
 
-function send_message(){
-    var message = input.value.trim(); // CENode seems to need this
+function sendMessage(){
+    var message = input.value.trim();
     input.value = ''; // blank the input field for new messages
     if (message == '') return; // don't submit empty messages
-    var card = "there is a nl card named '{uid}' that is to the agent 'agent1' and is from the individual '"+my_name+"' and has the timestamp '{now}' as timestamp and has '"+message.replace(/'/g, "\\'")+"' as content.";
-    node.add_sentence(card);
+    var card = "there is a nl card named '{uid}' that is to the agent 'agent1' and is from the individual '"+myName+"' and has the timestamp '{now}' as timestamp and has '"+message.replace(/'/g, "\\'")+"' as content.";
+    node.addSentence(card);
 
     // Finally, prepend our message to the list of messages:
-    var item = '<li class="'+my_name+'">'+message+'</li>';
+    var item = '<li class="'+myName+'">'+message+'</li>';
     messages.innerHTML = item + messages.innerHTML;
 };
 
-function poll_cards(){
+function pollCards(){
     setTimeout(function(){
-        var cards = node.concepts.card.all_instances; // Recursively get any cards the agent knows about
+        var cards = node.concepts.card.allInstances; // Recursively get any cards the agent knows about
         for(var i = 0; i < cards.length; i++){
             var card = cards[i];
-            if(card.is_to.name == my_name && processed_cards.indexOf(card.name) == -1){ // If sent to us and is still yet unseen
-                processed_cards.push(card.name); // Add this card to the list of 'seen' cards
+            if(card.is_to.name == myName && processedCards.indexOf(card.name) == -1){ // If sent to us and is still yet unseen
+                processedCards.push(card.name); // Add this card to the list of 'seen' cards
                 var gist = card.content;
                 var imgmatch = gist.match(/[\'\"](.*)[\'\"] as image/);
                 var item = '<li class="'+card.is_from.name+'">'+gist;
@@ -63,8 +64,8 @@ function poll_cards(){
                 messages.innerHTML = item + messages.innerHTML; // Prepend this new message to our list in the DOM
             }
         }
-        poll_cards(); // Restart the method again
+        pollCards(); // Restart the method again
     }, 1000);
 }
 
-poll_cards();
+pollCards();
