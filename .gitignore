@@ -14,3 +14,4 @@
 *.ps
 *.toc
 *.gz
+node_modules/

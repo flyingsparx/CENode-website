@@ -1,0 +1,6 @@
+{
+  "name": "cenode-demo",
+  "dependencies": {
+    "cenode": "^3.0.1"
+  }
+}
